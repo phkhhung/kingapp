@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:kingapp/db/db_helper.dart';
+import 'package:kingapp/services/auth_service.dart';
 import 'package:kingapp/screens/home_screen.dart';
+import 'package:kingapp/screens/login_screen.dart';
+import 'db/db_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await MongoDatabase.connect();
-  runApp(const MyApp());
+  bool loggedIn = await AuthService.isLoggedIn();
+  await MongoDatabase.connect(); //Kết nối MongoDB
+  runApp(MyApp(isLoggedIn: loggedIn));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool isLoggedIn;
+  const MyApp({super.key, required this.isLoggedIn});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'KingApp',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: HomeScreen(),
+      home: isLoggedIn ? HomeScreen() : LoginScreen(),
     );
   }
 }
-
-

@@ -28,7 +28,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     _priceController = TextEditingController(text: widget.product.gia.toString());
   }
 
-  // 🟢 Chọn ảnh từ thư viện hoặc camera
+  // Chọn ảnh từ thư viện hoặc camera
   Future<void> _pickImage(ImageSource source) async {
     final pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
@@ -38,7 +38,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
   }
 
-  // 🟢 Lưu sản phẩm sau khi chỉnh sửa
+  // Lưu sản phẩm sau khi chỉnh sửa
   void _saveProduct() async {
     if (_formKey.currentState!.validate()) {
       String newImagePath = _imageFile?.path ?? widget.product.hinhanh;
@@ -67,7 +67,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // 🟢 Hiển thị ảnh cũ hoặc mới
+              // Hiển thị ảnh cũ hoặc mới
               GestureDetector(
                 onTap: () => _pickImage(ImageSource.gallery),
                 child: CircleAvatar(
@@ -84,7 +84,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
               ),
               const SizedBox(height: 20),
 
-              // 🟢 Nhập loại sản phẩm
+              // Nhập loại sản phẩm
               TextFormField(
                 controller: _nameController,
                 decoration: const InputDecoration(labelText: "Loại sản phẩm"),
@@ -92,7 +92,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
               ),
               const SizedBox(height: 10),
 
-              // 🟢 Nhập giá sản phẩm
+              // Nhập giá sản phẩm
               TextFormField(
                 controller: _priceController,
                 keyboardType: TextInputType.number,
@@ -101,7 +101,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
               ),
               const SizedBox(height: 20),
 
-              // 🟢 Nút lưu sản phẩm
+              // Nút lưu sản phẩm
               ElevatedButton(
                 onPressed: _saveProduct,
                 child: const Text("Lưu thay đổi"),

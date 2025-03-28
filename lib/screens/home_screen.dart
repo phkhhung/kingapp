@@ -4,10 +4,10 @@ import '../db/db_helper.dart';
 import '../models/product.dart';
 import 'add_product_screen.dart';
 import 'edit_product_screen.dart';
-import 'search_screen.dart'; // Import màn hình tìm kiếm
+import 'search_screen.dart';
+import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -15,8 +15,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<Product> _products = [];
   bool isGridView = true;
-  bool isDarkMode = false;
   String _sortOption = 'Tên A-Z';
+  bool isAscending = true;
 
   @override
   void initState() {
@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
     var data = await MongoDatabase.getProducts();
     setState(() {
       _products = data.map((item) => Product.fromMap(item)).toList();
-      sortProducts(); // Áp dụng sắp xếp khi tải dữ liệu
+      sortProducts();
     });
   }
 
@@ -53,34 +53,56 @@ class _HomeScreenState extends State<HomeScreen> {
       } else if (_sortOption == 'Giá') {
         _products.sort((a, b) => a.gia.compareTo(b.gia));
       }
+      if (!isAscending) {
+        _products = _products.reversed.toList();
+      }
     });
+  }
+
+  void logout() {
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => LoginScreen()));
   }
 
   @override
   Widget build(BuildContext context) {
-    return
-
-      Scaffold(
+    return Scaffold(
       appBar: AppBar(
         title: const Text('Danh sách sản phẩm'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SearchScreen(products: _products)),
-            ),
+            icon: Icon(Icons.search),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchScreen(products: _products),
+                ),
+              );
+            },
           ),
           PopupMenuButton<String>(
             onSelected: (value) {
-              setState(() {
-                _sortOption = value;
-                sortProducts();
-              });
+              if (value == 'Đăng xuất') {
+                logout();
+              } else if (value == 'Đảo chiều') {
+                setState(() {
+                  isAscending = !isAscending;
+                  sortProducts();
+                });
+              } else {
+                setState(() {
+                  _sortOption = value;
+                  sortProducts();
+                });
+              }
             },
             itemBuilder: (context) => [
               const PopupMenuItem(value: 'Tên A-Z', child: Text('Sắp xếp: Tên A-Z')),
               const PopupMenuItem(value: 'Giá', child: Text('Sắp xếp: Giá')),
+              const PopupMenuItem(value: 'Đảo chiều', child: Text('Đảo chiều sắp xếp')),
+              const PopupMenuDivider(),
+              const PopupMenuItem(value: 'Đăng xuất', child: Text('Đăng xuất', style: TextStyle(color: Colors.red))),
             ],
             icon: const Icon(Icons.sort),
           ),
@@ -114,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisCount: 2,
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
-        childAspectRatio: 0.7,
+        childAspectRatio: 0.75,
       ),
       itemCount: _products.length,
       itemBuilder: (context, index) {
@@ -141,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Expanded(
                     child: ClipRRect(
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
                       child: product.hinhanh.isNotEmpty
                           ? Image.file(File(product.hinhanh), width: double.infinity, fit: BoxFit.cover)
                           : const Icon(Icons.image, size: 50),

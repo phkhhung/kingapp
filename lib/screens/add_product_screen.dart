@@ -20,7 +20,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   File? _image;
   final ImagePicker _picker = ImagePicker();
 
-  // 🟢 Chọn ảnh từ thư viện hoặc camera
+  // Chọn ảnh từ thư viện hoặc camera
   Future<void> _pickImage(ImageSource source) async {
     final pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
@@ -30,7 +30,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     }
   }
 
-  // 🟢 Hiển thị menu chọn ảnh
+  // Hiển thị menu chọn ảnh
   void _showImagePicker() {
     showModalBottomSheet(
       context: context,
@@ -59,7 +59,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     );
   }
 
-  // 🟢 Lưu sản phẩm
+  // Lưu sản phẩm
   void _saveProduct() async {
     if (_formKey.currentState!.validate()) {
       final newProduct = Product(
@@ -89,7 +89,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // 🟢 Hiển thị ảnh đã chọn với hiệu ứng Fade
+                // Hiển thị ảnh đã chọn với hiệu ứng Fade
                 GestureDetector(
                   onTap: _showImagePicker,
                   child: AnimatedSwitcher(
@@ -106,7 +106,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 ),
                 const SizedBox(height: 20),
 
-                // 🟢 Nhập loại sản phẩm
+                // Nhập loại sản phẩm
                 TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
@@ -117,7 +117,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 ),
                 const SizedBox(height: 10),
 
-                // 🟢 Nhập giá sản phẩm
+                // Nhập giá sản phẩm
                 TextFormField(
                   controller: _priceController,
                   keyboardType: TextInputType.number,
@@ -129,7 +129,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 ),
                 const SizedBox(height: 20),
 
-                // 🟢 Nút thêm sản phẩm với hiệu ứng Slide
+                // Nút thêm sản phẩm với hiệu ứng Slide
                 ElevatedButton(
                   onPressed: _saveProduct,
                   child: const Text('Thêm sản phẩm'),

@@ -4,23 +4,33 @@ import '../models/product.dart';
 class MongoDatabase {
   static var db, productCollection;
 
+
   static Future<void> connect() async {
-    db = await Db.create("mongodb+srv://phkhhung7:phkhhung@cluster0.7fghf.mongodb.net//kingapp_db?retryWrites=true&w=majority&appName=Cluster0");
-    await db.open();
-    productCollection = db.collection("products");
+    try {
+      print("Đang kết nối");
+      db = await Db.create("mongodb+srv://phkhhung7:phkhhung@cluster0.7fghf.mongodb.net/kingapp_db?retryWrites=true&w=majority&appName=Cluster0");
+      await db.open();
+      print("Kết nối thành công!");
+
+      productCollection = db.collection("products");
+      print("📂 Danh sách collections: ${await db.getCollectionNames()}");
+    } catch (e, stacktrace) {
+      print("Lỗi kết nối: $e");
+      print(stacktrace); // Hiển thị lỗi đầy đủ
+    }
   }
 
-  // 🟢 Lấy danh sách sản phẩm
+  // Lấy danh sách sản phẩm
   static Future<List<Map<String, dynamic>>> getProducts() async {
     try {
       return await productCollection.find().toList();
     } catch (e) {
-      print("❌ Lỗi lấy sản phẩm: $e");
+      print("Lỗi lấy sản phẩm: $e");
       return [];
     }
   }
 
-  // 🟢 Thêm sản phẩm mới
+  // Thêm sản phẩm mới
   static Future<void> addProduct(Product product) async {
     try {
       await productCollection.insertOne({
@@ -28,23 +38,23 @@ class MongoDatabase {
         'gia': product.gia,
         'hinhanh': product.hinhanh,
       });
-      print("✅ Thêm sản phẩm thành công");
+      print("Thêm sản phẩm thành công");
     } catch (e) {
-      print("❌ Lỗi khi thêm sản phẩm: $e");
+      print("Lỗi khi thêm sản phẩm: $e");
     }
   }
 
-  // 🟢 Xóa sản phẩm
+  // Xóa sản phẩm
   static Future<void> deleteProduct(String id) async {
     try {
       await productCollection.deleteOne({"_id": ObjectId.parse(id)});
-      print("✅ Xóa sản phẩm thành công");
+      print("Xóa sản phẩm thành công");
     } catch (e) {
-      print("❌ Lỗi khi xóa sản phẩm: $e");
+      print("Lỗi khi xóa sản phẩm: $e");
     }
   }
 
-  // 🟢 Cập nhật sản phẩm
+  //Cập nhật sản phẩm
   static Future<void> updateProduct(Product product) async {
     try {
       await productCollection.updateOne(
@@ -57,9 +67,9 @@ class MongoDatabase {
           }
         },
       );
-      print("✅ Cập nhật sản phẩm thành công");
+      print("Cập nhật sản phẩm thành công");
     } catch (e) {
-      print("❌ Lỗi khi cập nhật sản phẩm: $e");
+      print("Lỗi khi cập nhật sản phẩm: $e");
     }
   }
 }

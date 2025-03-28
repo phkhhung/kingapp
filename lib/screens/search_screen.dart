@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:io'; // Import thư viện để hiển thị hình ảnh từ file
 import '../models/product.dart';
+import 'product_detail_screen.dart'; // Import màn hình chi tiết sản phẩm
 
 class SearchScreen extends StatefulWidget {
   final List<Product> products;
@@ -23,7 +25,8 @@ class _SearchScreenState extends State<SearchScreen> {
     setState(() {
       query = value;
       _filteredProducts = widget.products
-          .where((product) => product.loaisp.toLowerCase().contains(query.toLowerCase()))
+          .where((product) =>
+          product.loaisp.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
   }
@@ -31,7 +34,15 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Tìm kiếm sản phẩm')),
+      appBar: AppBar(
+        title: const Text('Tìm kiếm sản phẩm'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
       body: Column(
         children: [
           Padding(
@@ -46,10 +57,37 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
+            child: _filteredProducts.isEmpty
+                ? const Center(child: Text('Không tìm thấy sản phẩm'))
+                : ListView.builder(
               itemCount: _filteredProducts.length,
               itemBuilder: (context, index) {
-                return ListTile(title: Text(_filteredProducts[index].loaisp));
+                var product = _filteredProducts[index];
+
+                return ListTile(
+                  title: Text(product.loaisp),
+                  subtitle: Text('${product.gia} VNĐ'),
+                  leading: product.hinhanh.isNotEmpty
+                      ? ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.file(
+                      File(product.hinhanh),
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                      : const Icon(Icons.image, size: 50),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ProductDetailScreen(product: product),
+                      ),
+                    );
+                  },
+                );
               },
             ),
           ),
